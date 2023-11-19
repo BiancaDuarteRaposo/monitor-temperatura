@@ -16,6 +16,15 @@ Configurações necessárias de ambiente de software:
 - Instalar o driver do ESP8266: https://s3-sa-east-1.amazonaws.com/robocore-tutoriais/163/CP210x_Windows_Drivers.zip
 
 Configurações para rodar o projeto:
-- Configurar o arquivo config.h com seu usuario e chave de api do adafruit.
+- Configurar o feed na linha `AdafruitIO_Feed *termometro_digital = io.feed("nome-do-feed");`
+- Configurar o arquivo config.h com seu usuario e chave de api do adafruit:
+```
+#define IO_USERNAME "" //usuario adafruit
+#define IO_KEY "" //chave api adafruit
+```
 - Configurar o SSID e senha da rede no qual você está conectado.
+```
+#define WIFI_SSID "" //nome da rede wifi
+#define WIFI_PASS "" //senha da rede wifi
+```
 
