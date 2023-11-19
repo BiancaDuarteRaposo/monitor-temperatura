@@ -4,7 +4,7 @@
 
 //Instanciando o feed do Adafruit
 AdafruitIO_Feed *termometro_digital = io.feed("termometro-digital");
-//Instanciando a conexão com o sensor de temperatura
+//Instanciando a conexão com o sensor de temperatura através do pino digital D4
 OneWire barramento(D4);
 //Instanciando o sensor de temperatura
 DallasTemperature sensor(&barramento);
