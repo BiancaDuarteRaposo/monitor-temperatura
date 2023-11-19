@@ -38,7 +38,7 @@
 
       <div class="row">
         <div class="col">
-            <div id="alert-message" role="alert"></div>
+          <div id="alert-message" role="alert"></div>
         </div>
       </div>
       <div class="row">
@@ -102,14 +102,17 @@
           return response.json();
         })
         .then((data) => {
-          if (data.details.data.last.value == -127) {
+          var lastUpdate = Date.parse(data.details.data.last.updated_at);
+          var now = new Date();
+          var fiveMinutes = 5 * 60 * 1000;
+          var lastUpdateMoreThanFiveMinutes = now - lastUpdate > fiveMinutes;
+          if (
+            data.details.data.last.value == -127 ||
+            lastUpdateMoreThanFiveMinutes
+          ) {
             {
               d.className = " alert alert-secondary";
-              d.innerText =
-                "No momento o dispositivo encontra-se desligado, a ultima temperatura medida foi de: " +
-                data.details.data.first.value +
-                "°C em " +
-                data.details.data.first.updated_at;
+              d.innerText = "No momento o dispositivo encontra-se desligado";
             }
           } else if (data.details.data.last.id != lastDataId) {
             addValueToChart(
