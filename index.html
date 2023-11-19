@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script
+    src="https://kit.fontawesome.com/9d1d9a82d2.js"
+    crossorigin="anonymous"></script>
+
+  <title>Controle de temperatura</title>
+</head>
+<style>
+  .chart-container {
+    width: 50%;
+    height: 50%;
+    margin: auto;
+  }
+</style>
+
+<body>
+    <div class="container text-center">
+        <div class="row">
+            <div class="col">
+              <h1>Controle de temperatura - Bianca Duarte Raposo</h1>
+          </div>
+        </div>
+        
+        <div class="row">
+            <div class="col">
+                <!-- <div id="alert-message" class="alert alert-success" role="alert"> -->
+                <div id="alert-message" role="alert">
+                    
+                </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <canvas id="chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js">
+</script>
+<script>
+    var lastDataId = null;
+    const ctx = document.getElementById("chart").getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+        labels: [],
+        datasets: [{
+            label: 'Histórico de temperatura',
+            backgroundColor: 'rgba(161, 198, 247, 1)',
+            borderColor: 'rgb(47, 128, 237)',
+            data: [],
+        }]
+        },
+        options: {
+        scales: {
+            yAxes: [{
+            ticks: {
+                beginAtZero: true,
+            }
+            }]
+        }
+        },
+    });
+
+    function addValueToChart(value, label){
+        myChart.data.labels.push(label);
+        myChart.data.datasets.forEach((dataset) => {
+            dataset.data.push(value);
+            if(dataset.data.length >= 30)
+            {
+                dataset.data.shift();
+                myChart.data.labels.shift();
+            }
+        });
+        myChart.update();
+
+    };
+    function updateChart(){
+      var d = document.getElementById("alert-message");
+
+      const apiUrl = 'https://io.adafruit.com/api/v2/bianca_du/feeds/termometro-digital/details';
+            fetch(apiUrl)
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+              if(data.details.data.last.value == -127){
+                {
+
+                  d.className = " alert alert-secondary";
+                  d.innerText = "No momento o dispositivo encontra-se desligado, a ultima temperatura medida foi de: " + data.details.data.first.value + "°C em " + data.details.data.first.updated_at ;
+                }
+              }
+              else if(data.details.data.last.id != lastDataId)
+              {
+                    addValueToChart(data.details.data.last.value, data.details.data.last.updated_at);
+                    var temperature =data.details.data.last.value; 
+                    var isIdealTemperature = temperature <= -17.7;
+                    if(isIdealTemperature)
+                    {
+                        d.className = " alert alert-success";
+                        d.innerText = "Seu leite materno está seguro, temperatura dentro do indicado: " + temperature + "°C";
+                    }
+                    else if(!isIdealTemperature && temperature <= 0)
+                    {
+                        d.className = " alert alert-warning";
+                        d.innerText = "Seu leite materno pode estar em risco, temperatura fora do indicado: " + temperature + "°C";
+                    }
+                    else
+                    {
+                        d.className = " alert alert-danger";
+                        d.innerText = "Seu leite materno está em risco, temperatura fora do indicado: " + temperature + "°C";
+                    }
+              }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+            });
+    }
+    updateChart();
+
+    setInterval( function() {
+      updateChart();
+    }, 5000);
+
+      
+</script>
+
+</html>
