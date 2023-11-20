@@ -15,7 +15,19 @@ Para roda-lo você precisará dos seguintes componentes:
 
 ### Configurações necessárias de ambiente de software:
 - Instalar o Arduino IDE: https://www.arduino.cc/en/software
+- Incluir o gerenciador de placa adicional na aba de preferencias do arduino IDE: https://arduino.esp8266.com/stable/package_esp8266com_index.json
+![image](https://github.com/BiancaDuarteRaposo/monitor-temperatura/assets/81635323/43e34c6c-5a8c-47c4-9ce2-d3ae195ce8c2)
+- Instalar as bibliotecas no arduino IDE:
+  - ArduinoHttpClient
+  - Adafruit BusIO
+  - Adafruit IO Arduino
+  - Adafruit MQTT Library
+  - DallasTemperature
+  - OneWire
+  - Wifi Manager 
 - Instalar o driver do ESP8266: https://s3-sa-east-1.amazonaws.com/robocore-tutoriais/163/CP210x_Windows_Drivers.zip
+
+
 
 ### Configurações para rodar o projeto:
 - Configurar o feed na linha `AdafruitIO_Feed *termometro_digital = io.feed("nome-do-feed");`
